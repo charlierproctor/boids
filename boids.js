@@ -1,17 +1,35 @@
+var ticker, canvas, ctx;
 window.onload = function(){
-var ticker = require('ticker');
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-var x = 0, y = 0;
- 
-ticker(window, 60).on('tick', function() {
-  x += Math.round(Math.random()*2-1)*10
-  y += Math.round(Math.random()*2-1)*10
-}).on('draw', function() {
-  ctx.fillStyle = 'black'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = 'white'
-  ctx.fillRect(x, y, 10, 10)
-})
+	ticker = require('ticker');
+	
+	canvas = document.getElementById('canvas');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	ctx = canvas.getContext('2d');
+	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
+
+var x;
+function tick(){
+	x = new boid(100,200);
+}
+
+function draw(){
+	x.draw();
+}
+
+function boid(posx,posy){
+	this.posx = posx;
+	this.posy = posy;
+}
+
+boid.prototype.draw = function(){
+	ctx.beginPath();
+	ctx.moveTo(this.posx,this.posy);
+	ctx.lineTo(this.posx+5,this.posy-10);
+	ctx.lineTo(this.posx-5,this.posy-10);
+	ctx.closePath();
+	ctx.stroke();
+};
 
