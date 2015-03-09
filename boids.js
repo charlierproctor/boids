@@ -20,7 +20,11 @@ function draw(){
 }
 
 function boids(num){
+	this.num = num;
 	this.arr = [];
+	this.add(num);
+}
+boids.prototype.add = function(num){
 	for (var i = 0; i < num; i++) {
 		this.arr.push(new boid(
 			new coords(
@@ -30,7 +34,6 @@ function boids(num){
 		)
 	};
 }
-
 boids.prototype.draw = function(){
 	canvas.width = canvas.width; // clear the canvas
 	for (var i = 0; i < this.arr.length; i++) {
@@ -80,7 +83,7 @@ boid.prototype.tick = function(boids){
 	this.moveForward()
 }
 
-var radius = 100;
+var radius = 50;
 boid.prototype.findLocals = function(boids){
 	var x = this.pos.x, y = this.pos.y;
 	return boids.arr.filter(function(boid){
@@ -117,13 +120,21 @@ Array.prototype.averagePosition = function() {
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
-var steerTowardsStrength = 0.01;
+var steerTowardsStrength = 0.1;
 boid.prototype.steerTowards = function(avgPos){
 	this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
 }
-var avoidStrength = 0.008;
+var avoidStrength = 0.08;
 boid.prototype.avoid = function(avgPos){
-	var oppositeDirection = Math.PI + this.pos.angleTo(avgPos);
+	var angle = this.pos.angleTo(avgPos);
+	var oppositeDirection;
+
+	if (angle > 0){
+		oppositeDirection = angle - Math.PI;
+	} else {
+		oppositeDirection = angle + Math.PI;
+	}
+
 	this.heading += avoidStrength * oppositeDirection;
 }
 
