@@ -113,11 +113,11 @@ Array.prototype.averagePosition = function() {
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
-var avgPositionStrength = 0.001;
+var steerTowardsStrength = 0.1;
 boid.prototype.steerTowards = function(locals){
 	if (locals.length > 0) {
 		var avgPos = locals.averagePosition();
-		this.heading += this.pos.angleTo(avgPos);
+		this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
 	}
 }
 
