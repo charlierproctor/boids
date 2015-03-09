@@ -87,11 +87,14 @@ boid.prototype.tick = function(boids){
 }
 
 var radius = 50;
+var angle = 0.9 * Math.PI;
 boid.prototype.findLocals = function(boids){
-	var x = this.pos.x, y = this.pos.y, id = this.id;
+	var pos = this.pos, x = this.pos.x, y = this.pos.y, id = this.id;
 	return boids.arr.filter(function(boid){
+		var angTo = pos.angleTo(boid.pos);
 		return x && y && boid.pos.x && boid.pos.y 
 		&& Math.sqrt(Math.pow(x - boid.pos.x, 2) + Math.pow(y - boid.pos.y, 2)) < radius
+		&& (angTo < angle && - angle < angTo)
 		&& id != boid.id;
 	})
 }
