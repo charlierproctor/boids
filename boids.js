@@ -137,15 +137,11 @@ Array.prototype.averagePosition = function() {
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
-// force angles between -Math.PI and Math.PI
-function rangify(angle){
-	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
-}
-
 boid.prototype.cohere = function(avgPos){
 	var angle = this.cohesionStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
+
 boid.prototype.separate = function(avgPos){
 	var angle = this.separationStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
 	this.heading = rangify(this.heading + angle);
@@ -155,6 +151,11 @@ boid.prototype.move = function(){
 	this.pos.x -= this.speed * Math.sin(this.heading);
 	this.pos.y += this.speed * Math.cos(this.heading);
 	this.pos.checkBounds()
+}
+
+// force angles between -Math.PI and Math.PI
+function rangify(angle){
+	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
 }
 
 function coords(x,y){
