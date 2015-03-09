@@ -123,7 +123,7 @@ boid.prototype.steerTowards = function(avgPos){
 }
 var avoidStrength = 0.008;
 boid.prototype.avoid = function(avgPos){
-	var oppositeDirection = Math.PI - this.pos.angleTo(avgPos);
+	var oppositeDirection = Math.PI + this.pos.angleTo(avgPos);
 	this.heading += avoidStrength * oppositeDirection;
 }
 
