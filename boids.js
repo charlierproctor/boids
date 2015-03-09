@@ -30,7 +30,7 @@ boids.prototype.add = function(num){
 			new coords(
 				Math.random() * canvas.width, 
 				Math.random() * canvas.height), 
-			2 * Math.random() * Math.PI - Math.PI)
+			2 * Math.random() * Math.PI)
 		)
 	};
 }
@@ -122,20 +122,13 @@ Array.prototype.averagePosition = function() {
 
 var steerTowardsStrength = 0.1;
 boid.prototype.steerTowards = function(avgPos){
-	this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
+	var angle = steerTowardsStrength * this.pos.angleTo(avgPos);
+	this.heading = this.heading + angle;
 }
-var avoidStrength = 0.08;
+var avoidStrength = 0.0001;
 boid.prototype.avoid = function(avgPos){
-	var angle = this.pos.angleTo(avgPos);
-	var oppositeDirection;
-
-	if (angle > 0){
-		oppositeDirection = angle - Math.PI;
-	} else {
-		oppositeDirection = angle + Math.PI;
-	}
-
-	this.heading += avoidStrength * oppositeDirection;
+	var oppositeDirection = avoidStrength * this.pos.angleTo(avgPos) + Math.PI;
+	this.heading = this.heading + oppositeDirection;
 }
 
 var speed = 5;
@@ -161,5 +154,14 @@ coords.prototype.rotate = function(radians){
 	this.y = y;
 }
 coords.prototype.angleTo = function(coords){
-	return Math.atan((coords.y - this.y) / (coords.x - this.x));
+	var y = coords.y - this.y, x = coords.x - this.x;
+	var res = Math.atan(y / x);
+	if (x < 0) {
+		if (y > 0){
+			res += Math.PI;
+		} else {
+			res -= Math.PI;
+		}
+	}
+	return res;
 }
