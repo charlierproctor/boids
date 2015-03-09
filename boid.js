@@ -93,10 +93,14 @@ boid.prototype.separate = function(avgPos){
 boid.prototype.navigateObjects = function(localObjects){
 	for (var i = 0; i < localObjects.length; i++) {
 		var obj = localObjects[i];
-		var angle = Math.abs(obj.strength) * rangify(this.pos.angleTo(obj.pos) - this.heading);
+		var angle
 		if (obj.strength < 0) {
-			angle = rangify(angle + Math.PI);
+			angle = rangify(this.pos.angleTo(obj.pos) + Math.PI - this.heading);
+		} else {
+			angle = rangify(this.pos.angleTo(obj.pos) - this.heading);
 		}
+
+		angle *= Math.abs(obj.strength);
 		this.heading = rangify(this.heading + angle);
 	}
 }
@@ -109,7 +113,12 @@ boid.prototype.move = function(){
 
 // force angles between -Math.PI and Math.PI
 function rangify(angle){
-	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
+	if (angle < 0){
+		var res = (angle - Math.PI) % (2 * Math.PI) + Math.PI;	
+	} else {
+		var res = (angle + Math.PI) % (2 * Math.PI) - Math.PI;
+	}
+	return res
 }
 
 module.exports = boid;
