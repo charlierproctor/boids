@@ -1,5 +1,5 @@
-var ticker = require('ticker'), boids = require('./boids');
-var canvas, ctx, theBoids;
+var ticker = require('ticker'), boids = require('./boids'), objects = require('./objects');
+var canvas, ctx, theBoids, theObjects;
 window.onload = function(){
 	ticker = require('ticker');
 	
@@ -21,6 +21,11 @@ window.onload = function(){
 			angle: 0.9 * Math.PI
 		}
 	});
+	theObjects = new objects(canvas, 20, {
+		shape: {
+			radius: 10
+		}
+	})
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
@@ -30,5 +35,7 @@ function tick(){
 }
 
 function draw(){
-	theBoids.draw(canvas,ctx);
+	canvas.width = canvas.width; // clear the canvas
+	theBoids.draw(ctx);
+	theObjects.draw(ctx);
 }

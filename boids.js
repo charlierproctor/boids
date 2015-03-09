@@ -20,8 +20,7 @@ boids.prototype.createBoids = function(canvas,opts){
 	};
 }
 
-boids.prototype.draw = function(canvas,ctx){
-	canvas.width = canvas.width; // clear the canvas
+boids.prototype.draw = function(ctx){
 	this.arr.forEach(function(boid){
 		boid.draw(ctx)
 	});
