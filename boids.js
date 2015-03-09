@@ -24,12 +24,25 @@ function boid(posx,posy){
 	this.posy = posy;
 }
 
+var base = 10, height = 20;
 boid.prototype.draw = function(){
+
 	ctx.beginPath();
 	ctx.moveTo(this.posx,this.posy);
-	ctx.lineTo(this.posx+5,this.posy-10);
-	ctx.lineTo(this.posx-5,this.posy-10);
+	ctx.lineTo(this.posx+b,this.posy+a);
+	ctx.lineTo(this.posx+d,this.posy+c);
 	ctx.closePath();
 	ctx.stroke();
 };
 
+function coords(x,y){
+	this.x = x;
+	this.y = y;
+}
+
+coords.prototype.rotate = function(radians){
+	var x = this.x * Math.cos(radians) - this.y * Math.sin(radians);
+	var y = this.x * Math.sin(radians) + this.y * Math.cos(radians);
+	this.x = x;
+	this.y = y;
+}
