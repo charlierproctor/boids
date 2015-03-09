@@ -26,7 +26,7 @@ function boids(num){
 			new coords(
 				Math.random() * canvas.width, 
 				Math.random() * canvas.height), 
-			2 * Math.random() * Math.PI)
+			2 * Math.random() * Math.PI - Math.PI)
 		)
 	};
 }
@@ -127,7 +127,7 @@ boid.prototype.avoid = function(avgPos){
 	this.heading += avoidStrength * oppositeDirection;
 }
 
-var speed = 2;
+var speed = 5;
 boid.prototype.moveForward = function(){
 	this.pos.x -= speed * Math.sin(this.heading);
 	this.pos.y += speed * Math.cos(this.heading);
