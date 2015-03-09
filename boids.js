@@ -25,8 +25,10 @@ function boids(num){
 	this.add(num);
 }
 boids.prototype.add = function(num){
+	var id = 0;
 	for (var i = 0; i < num; i++) {
 		this.arr.push(new boid(
+			id++,
 			new coords(
 				Math.random() * canvas.width, 
 				Math.random() * canvas.height), 
@@ -47,7 +49,8 @@ boids.prototype.tick = function(){
 	};
 }
 
-function boid(pos,heading){
+function boid(id,pos,heading){
+	this.id = id;
 	this.pos = pos;
 	this.heading = heading;
 }
@@ -85,9 +88,11 @@ boid.prototype.tick = function(boids){
 
 var radius = 50;
 boid.prototype.findLocals = function(boids){
-	var x = this.pos.x, y = this.pos.y;
+	var x = this.pos.x, y = this.pos.y, id = this.id;
 	return boids.arr.filter(function(boid){
-		return boid.pos.x && boid.pos.y && Math.sqrt(Math.pow(x - boid.pos.x, 2) + Math.pow(y - boid.pos.y, 2)) < radius;	
+		return x && y && boid.pos.x && boid.pos.y 
+		&& Math.sqrt(Math.pow(x - boid.pos.x, 2) + Math.pow(y - boid.pos.y, 2)) < radius
+		&& id != boid.id;
 	})
 }
 
