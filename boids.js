@@ -6,7 +6,20 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	theBoids = new boids(200);
+	theBoids = new boids(100, {
+		speed: 5,
+		alignmentStrength: 0.4,
+		cohesionStrength: 0.1,
+		separationStrength: 0.05,
+		size: {
+			base: 10,
+			height: 20
+		},
+		locals: {
+			radius: 50,
+			angle: 0.9 * Math.PI
+		}
+	});
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
@@ -19,28 +32,29 @@ function draw(){
 	theBoids.draw();
 }
 
-function boids(num){
+function boids(num, opts){
 	this.num = num;
 	this.arr = [];
-	this.add(num);
+	this.createBoids(opts);
 }
-boids.prototype.add = function(num){
+boids.prototype.createBoids = function(opts){
 	var id = 0;
-	for (var i = 0; i < num; i++) {
+	for (var i = 0; i < this.num; i++) {
 		this.arr.push(new boid(
 			id++,
 			new coords(
 				Math.random() * canvas.width, 
 				Math.random() * canvas.height), 
-			2 * Math.random() * Math.PI)
+			2 * Math.random() * Math.PI,
+			opts)
 		)
 	};
 }
 boids.prototype.draw = function(){
 	canvas.width = canvas.width; // clear the canvas
-	for (var i = 0; i < this.arr.length; i++) {
-		this.arr[i].draw();
-	};
+	this.arr.forEach(function(boid){
+		boid.draw()
+	});
 }
 
 boids.prototype.tick = function(){
@@ -49,18 +63,24 @@ boids.prototype.tick = function(){
 	};
 }
 
-function boid(id,pos,heading){
+function boid(id,pos,heading, opts){
 	this.id = id;
 	this.pos = pos;
 	this.heading = heading;
+
+	this.speed = opts.speed;
+	this.alignmentStrength = opts.alignmentStrength;
+	this.cohesionStrength = opts.cohesionStrength;
+	this.separationStrength = opts.separationStrength;
+	this.size = opts.size;
+	this.locals = opts.locals;
 }
 
-var base = 10, height = 20;
 boid.prototype.draw = function(){
 	var pts = [
-		new coords(0, height / 2),
-		new coords(base / 2, -height / 2),
-		new coords(-base / 2, -height / 2)
+		new coords(0, this.size.height / 2),
+		new coords(this.size.base / 2, -this.size.height / 2),
+		new coords(-this.size.base / 2, -this.size.height / 2)
 	];
 	for (var i = 0; i < pts.length; i++) {
 		pts[i].rotate(this.heading);
@@ -86,10 +106,9 @@ boid.prototype.tick = function(boids){
 	this.moveForward()
 }
 
-var radius = 50;
-var angle = 0.9 * Math.PI;
 boid.prototype.findLocals = function(boids){
 	var pos = this.pos, x = this.pos.x, y = this.pos.y, id = this.id;
+	var radius = this.locals.radius, angle = this.locals.angle;
 	return boids.arr.filter(function(boid){
 		var angTo = pos.angleTo(boid.pos);
 		return x && y && boid.pos.x && boid.pos.y 
@@ -109,10 +128,9 @@ Array.prototype.averageHeading = function() {
   	return this.sumOfHeadings() / (this.length || 1);
 }
 
-var avgHeadingStrength = 0.4;
 boid.prototype.averageHeading = function(locals){
 	if (locals.length > 0){
-		this.heading += (avgHeadingStrength * (locals.averageHeading() - this.heading));
+		this.heading += (this.alignmentStrength * (locals.averageHeading() - this.heading));
 	}
 }
 
@@ -133,21 +151,18 @@ function rangify(angle){
 	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
 }
 
-var steerTowardsStrength = 0.1;
 boid.prototype.steerTowards = function(avgPos){
-	var angle = steerTowardsStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
+	var angle = this.cohesionStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
-var avoidStrength = 0.05;
 boid.prototype.avoid = function(avgPos){
-	var angle = avoidStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
+	var angle = this.separationStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
 
-var speed = 5;
 boid.prototype.moveForward = function(){
-	this.pos.x -= speed * Math.sin(this.heading);
-	this.pos.y += speed * Math.cos(this.heading);
+	this.pos.x -= this.speed * Math.sin(this.heading);
+	this.pos.y += this.speed * Math.cos(this.heading);
 	this.pos.checkBounds()
 }
 
