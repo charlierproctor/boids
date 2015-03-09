@@ -72,6 +72,7 @@ boid.prototype.draw = function(){
 boid.prototype.tick = function(boids){
 	var locals = this.findLocals(boids);
 	this.averageHeading(locals);
+	this.steerTowards(locals);
 	this.moveForward()
 }
 
@@ -93,10 +94,30 @@ Array.prototype.averageHeading = function() {
   	return this.sumOfHeadings() / (this.length || 1);
 }
 
-var avgStrength = 0.5;
+var avgHeadingStrength = 0.5;
 boid.prototype.averageHeading = function(locals){
 	if (locals.length > 0){
-		this.heading += (avgStrength * (locals.averageHeading() - this.heading));
+		this.heading += (avgHeadingStrength * (locals.averageHeading() - this.heading));
+	}
+}
+
+Array.prototype.sumOfPositions = function() {
+  	return this.reduce(function(sumOfPositions, boid) { 
+  		return sumOfPositions.add(boid.pos); 
+  	}, new coords(0,0));
+}
+
+Array.prototype.averagePosition = function() {
+	var sum = this.sumOfPositions();
+	var denom = this.length || 1;
+  	return new coords(sum.x / denom, sum.y / denom);
+}
+
+var avgPositionStrength = 0.001;
+boid.prototype.steerTowards = function(locals){
+	if (locals.length > 0) {
+		var avgPos = locals.averagePosition();
+		this.heading += this.pos.angleTo(avgPos);
 	}
 }
 
@@ -114,10 +135,14 @@ function coords(x,y){
 coords.prototype.add = function(coords){
 	this.x += coords.x;
 	this.y += coords.y;
+	return this;
 }
 coords.prototype.rotate = function(radians){
 	var x = this.x * Math.cos(radians) - this.y * Math.sin(radians);
 	var y = this.x * Math.sin(radians) + this.y * Math.cos(radians);
 	this.x = x;
 	this.y = y;
+}
+coords.prototype.angleTo = function(coords){
+	return Math.atan((coords.y - this.y) / (coords.x - this.x));
 }
