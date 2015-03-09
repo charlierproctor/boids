@@ -6,7 +6,7 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	theBoids = new boids(100);
+	theBoids = new boids(50);
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
@@ -75,33 +75,35 @@ boid.prototype.tick = function(boids){
 	this.moveForward()
 }
 
-var radius = 50;
+var radius = 100;
 boid.prototype.findLocals = function(boids){
+	var x = this.pos.x, y = this.pos.y;
 	return boids.arr.filter(function(boid){
-		return Math.sqrt(Math.pow(boid.pos.x, 2) + Math.pow(boid.pos.y, 2)) < radius;
+		return boid.pos.x && boid.pos.y && Math.sqrt(Math.pow(x - boid.pos.x, 2) + Math.pow(y - boid.pos.y, 2)) < radius;	
 	})
 }
 
-Array.prototype.sum = function() {
-  	return this.reduce(function(sum, a) { 
-  		return sum + Number(a) 
+Array.prototype.sumOfHeadings = function() {
+  	return this.reduce(function(sumOfHeadings, a) { 
+  		return sumOfHeadings + Number(a.heading) 
   	}, 0);
 }
 
-Array.prototype.average = function() {
-  	return this.sum() / (this.length || 1);
+Array.prototype.averageHeading = function() {
+  	return this.sumOfHeadings() / (this.length || 1);
 }
 
 var avgStrength = 0.5;
 boid.prototype.averageHeading = function(locals){
-	this.heading += (avgStrength * (locals.average() - this.heading));
-	console.log(this.heading/Math.PI);
+	if (locals.length > 0){
+		this.heading += (avgStrength * (locals.averageHeading() - this.heading));
+	}
 }
 
 var speed = 1;
 boid.prototype.moveForward = function(){
-	this.pos.x += speed * Math.cos(this.heading);
-	this.pos.y += speed * Math.sin(this.heading);
+	this.pos.x -= speed * Math.sin(this.heading);
+	this.pos.y += speed * Math.cos(this.heading);
 }
 
 function coords(x,y){
