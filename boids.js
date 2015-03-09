@@ -19,28 +19,27 @@ function draw(){
 	x.draw();
 }
 
-function boid(coords,heading){
-	this.coords = coords;
+function boid(pos,heading){
+	this.pos = pos;
 	this.heading = heading;
 }
 
 var base = 10, height = 20;
 boid.prototype.draw = function(){
-	var a = new coords(0, height / 2);
-	a.rotate(this.heading);
-	a.add(this.coords);
-	var b = new coords(base / 2, -height / 2);
-	b.rotate(this.heading);
-	b.add(this.coords);
-	var c = new coords(-base / 2, -height / 2);
-	c.rotate(this.heading);
-	c.add(this.coords);
+	var pts = [
+		new coords(0, height / 2),
+		new coords(base / 2, -height / 2),
+		new coords(-base / 2, -height / 2)
+	];
+	for (var i = 0; i < pts.length; i++) {
+		pts[i].rotate(this.heading);
+		pts[i].add(this.pos);
+	};
 
-	// console.log(a,b,c);
 	ctx.beginPath();
-	ctx.moveTo(a.x,a.y);
-	ctx.lineTo(b.x,b.y);
-	ctx.lineTo(c.x,c.y);
+	ctx.moveTo(pts[0].x,pts[0].y);
+	ctx.lineTo(pts[1].x,pts[1].y);
+	ctx.lineTo(pts[2].x,pts[2].y);
 	ctx.closePath();
 	ctx.stroke();
 };
