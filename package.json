@@ -4,5 +4,8 @@
   "description": "",
   "main": "index.js",
   "author": "Charlie Proctor",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ticker": "^0.1.0"
+  }
 }
