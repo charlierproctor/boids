@@ -50,6 +50,7 @@ boids.prototype.createBoids = function(opts){
 		)
 	};
 }
+
 boids.prototype.draw = function(){
 	canvas.width = canvas.width; // clear the canvas
 	this.arr.forEach(function(boid){
@@ -99,11 +100,11 @@ boid.prototype.tick = function(boids){
 	var locals = this.findLocals(boids);
 	if (locals.length > 0) {
 		var avgPos = locals.averagePosition();
-		this.averageHeading(locals);
-		this.steerTowards(avgPos);
-		this.avoid(avgPos);
+		this.align(locals);
+		this.cohere(avgPos);
+		this.separate(avgPos);
 	}
-	this.moveForward()
+	this.move()
 }
 
 boid.prototype.findLocals = function(boids){
@@ -118,49 +119,39 @@ boid.prototype.findLocals = function(boids){
 	})
 }
 
-Array.prototype.sumOfHeadings = function() {
-  	return this.reduce(function(sumOfHeadings, a) { 
-  		return sumOfHeadings + Number(a.heading) 
-  	}, 0);
-}
-
 Array.prototype.averageHeading = function() {
-  	return this.sumOfHeadings() / (this.length || 1);
+  	return this.reduce(function(sum, boid) { 
+  		return sum + boid.heading;
+  	}, 0) / (this.length || 1);
 }
 
-boid.prototype.averageHeading = function(locals){
-	if (locals.length > 0){
-		this.heading += (this.alignmentStrength * (locals.averageHeading() - this.heading));
-	}
-}
-
-Array.prototype.sumOfPositions = function() {
-  	return this.reduce(function(sumOfPositions, boid) { 
-  		return sumOfPositions.add(boid.pos); 
-  	}, new coords(0,0));
+boid.prototype.align = function(locals){
+	this.heading += (this.alignmentStrength * (locals.averageHeading() - this.heading));
 }
 
 Array.prototype.averagePosition = function() {
-	var sum = this.sumOfPositions();
+	var sum = this.reduce(function(sum, boid) { 
+  		return sum.add(boid.pos); 
+  	}, new coords(0,0));
 	var denom = this.length || 1;
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
-// force angles between - Math.PI and Math.PI
+// force angles between -Math.PI and Math.PI
 function rangify(angle){
 	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
 }
 
-boid.prototype.steerTowards = function(avgPos){
+boid.prototype.cohere = function(avgPos){
 	var angle = this.cohesionStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
-boid.prototype.avoid = function(avgPos){
+boid.prototype.separate = function(avgPos){
 	var angle = this.separationStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
 
-boid.prototype.moveForward = function(){
+boid.prototype.move = function(){
 	this.pos.x -= this.speed * Math.sin(this.heading);
 	this.pos.y += this.speed * Math.cos(this.heading);
 	this.pos.checkBounds()
