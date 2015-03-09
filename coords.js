@@ -16,7 +16,7 @@ coords.prototype.rotate = function(radians){
 }
 coords.prototype.angleTo = function(coords){
 	var y = coords.y - this.y, x = coords.x - this.x;
-	var res = Math.atan(y / x);
+	var res = Math.atan(-y / x);
 	if (x < 0) {
 		if (y > 0){
 			res += Math.PI;
