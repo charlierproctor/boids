@@ -61,6 +61,30 @@ boid.prototype.draw = function(){
 	ctx.stroke();
 };
 
+boid.prototype.tick = function(boids){
+	var locals = this.findLocals(boids);
+	this.averageHeading(locals);
+	
+}
+
+var radius = 50;
+boid.prototype.findLocals = function(boids){
+	return boids.arr.filter(function(boid){
+		return Math.sqrt(Math.pow(boid.pos.x, 2) + Math.pow(boid.pos.y, 2)) < radius;
+	})
+}
+
+var avgStrength = 0.5;
+boid.prototype.averageHeading = function(locals){
+	var total = 0, count = 0;
+	locals.forEach(function(boid){
+		total += boid.heading;
+		count++;
+	})
+	var avg = total / count;
+	this.heading += avgStrength * (avg - this.heading);
+}
+
 function coords(x,y){
 	this.x = x;
 	this.y = y;
