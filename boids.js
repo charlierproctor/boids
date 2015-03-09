@@ -120,15 +120,20 @@ Array.prototype.averagePosition = function() {
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
+// force angles between - Math.PI and Math.PI
+function rangify(angle){
+	return (angle + Math.PI) % (2 * Math.PI) - Math.PI;
+}
+
 var steerTowardsStrength = 0.1;
 boid.prototype.steerTowards = function(avgPos){
-	var angle = steerTowardsStrength * this.pos.angleTo(avgPos);
-	this.heading = this.heading + angle;
+	var angle = steerTowardsStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
+	this.heading = rangify(this.heading + angle);
 }
-var avoidStrength = 0.0001;
+var avoidStrength = 0.05;
 boid.prototype.avoid = function(avgPos){
-	var oppositeDirection = avoidStrength * this.pos.angleTo(avgPos) + Math.PI;
-	this.heading = this.heading + oppositeDirection;
+	var angle = avoidStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
+	this.heading = rangify(this.heading + angle);
 }
 
 var speed = 5;
