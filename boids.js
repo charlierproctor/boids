@@ -145,6 +145,7 @@ var speed = 5;
 boid.prototype.moveForward = function(){
 	this.pos.x -= speed * Math.sin(this.heading);
 	this.pos.y += speed * Math.cos(this.heading);
+	this.pos.checkBounds()
 }
 
 function coords(x,y){
@@ -174,4 +175,19 @@ coords.prototype.angleTo = function(coords){
 		}
 	}
 	return res;
+}
+coords.prototype.checkBounds = function(){
+	var height = window.innerHeight, width = window.innerWidth;
+	if (this.x < 0){
+		this.x += width;
+	}
+	if (this.y < 0){
+		this.y += height
+	}
+	if (this.x > width){
+		this.x -= width
+	}
+	if (this.y > height){
+		this.y -= height
+	}
 }
