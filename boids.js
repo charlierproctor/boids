@@ -1,4 +1,4 @@
-var ticker, canvas, ctx;
+var ticker, canvas, ctx, theBoids;
 window.onload = function(){
 	ticker = require('ticker');
 	
@@ -6,17 +6,34 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
+	theBoids = new boids(100);
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
 
-var x;
 function tick(){
-	x = new boid(new coords(100,200),Math.PI / 2);
 }
 
 function draw(){
-	x.draw();
+	theBoids.draw();
+}
+
+function boids(num){
+	this.arr = [];
+	for (var i = 0; i < num; i++) {
+		this.arr.push(new boid(
+			new coords(
+				Math.random() * canvas.width, 
+				Math.random() * canvas.height), 
+			2 * Math.random() * Math.PI)
+		)
+	};
+}
+
+boids.prototype.draw = function(){
+	this.arr.forEach(function(boid){
+		boid.draw();
+	})
 }
 
 function boid(pos,heading){
