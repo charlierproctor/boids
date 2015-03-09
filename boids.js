@@ -12,6 +12,7 @@ window.onload = function(){
 }
 
 function tick(){
+	theBoids.tick();
 }
 
 function draw(){
@@ -31,9 +32,16 @@ function boids(num){
 }
 
 boids.prototype.draw = function(){
-	this.arr.forEach(function(boid){
-		boid.draw();
-	})
+	canvas.width = canvas.width; // clear the canvas
+	for (var i = 0; i < this.arr.length; i++) {
+		this.arr[i].draw();
+	};
+}
+
+boids.prototype.tick = function(){
+	for (var i = 0; i < this.arr.length; i++) {
+		this.arr[i].tick(this);
+	};
 }
 
 function boid(pos,heading){
@@ -64,7 +72,7 @@ boid.prototype.draw = function(){
 boid.prototype.tick = function(boids){
 	var locals = this.findLocals(boids);
 	this.averageHeading(locals);
-	
+	this.moveForward()
 }
 
 var radius = 50;
@@ -74,15 +82,26 @@ boid.prototype.findLocals = function(boids){
 	})
 }
 
+Array.prototype.sum = function() {
+  	return this.reduce(function(sum, a) { 
+  		return sum + Number(a) 
+  	}, 0);
+}
+
+Array.prototype.average = function() {
+  	return this.sum() / (this.length || 1);
+}
+
 var avgStrength = 0.5;
 boid.prototype.averageHeading = function(locals){
-	var total = 0, count = 0;
-	locals.forEach(function(boid){
-		total += boid.heading;
-		count++;
-	})
-	var avg = total / count;
-	this.heading += avgStrength * (avg - this.heading);
+	this.heading += (avgStrength * (locals.average() - this.heading));
+	console.log(this.heading/Math.PI);
+}
+
+var speed = 1;
+boid.prototype.moveForward = function(){
+	this.pos.x += speed * Math.cos(this.heading);
+	this.pos.y += speed * Math.sin(this.heading);
 }
 
 function coords(x,y){
