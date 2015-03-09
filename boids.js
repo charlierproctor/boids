@@ -1,46 +1,12 @@
-var ticker, canvas, ctx, theBoids, boid, coords;
-window.onload = function(){
-	ticker = require('ticker');
-	boid = require('./boid');
-	coords = require('./coords');
-	
-	canvas = document.getElementById('canvas');
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+var boid = require('./boid'), coords = require('./coords');
 
-	theBoids = new boids(100, {
-		speed: 5,
-		alignmentStrength: 0.4,
-		cohesionStrength: 0.1,
-		separationStrength: 0.05,
-		size: {
-			base: 10,
-			height: 20
-		},
-		locals: {
-			radius: 50,
-			angle: 0.9 * Math.PI
-		}
-	});
-	ctx = canvas.getContext('2d');
-	ticker(window, 60).on('tick', tick).on('draw', draw)
-}
-
-function tick(){
-	theBoids.tick();
-}
-
-function draw(){
-	theBoids.draw();
-}
-
-function boids(num, opts){
+function boids(canvas, num, opts){
 	this.num = num;
 	this.arr = [];
-	this.createBoids(opts);
+	this.createBoids(canvas,opts);
 }
 
-boids.prototype.createBoids = function(opts){
+boids.prototype.createBoids = function(canvas,opts){
 	var id = 0;
 	for (var i = 0; i < this.num; i++) {
 		this.arr.push(new boid(
@@ -54,7 +20,7 @@ boids.prototype.createBoids = function(opts){
 	};
 }
 
-boids.prototype.draw = function(){
+boids.prototype.draw = function(canvas,ctx){
 	canvas.width = canvas.width; // clear the canvas
 	this.arr.forEach(function(boid){
 		boid.draw(ctx)
@@ -67,3 +33,4 @@ boids.prototype.tick = function(){
 	};
 }
 
+module.exports = boids;

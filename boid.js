@@ -1,4 +1,4 @@
-var coords = require('./coords');
+var coords = require('./coords'), object = require('./object');
 function boid(id,pos,heading, opts){
 	this.id = id;
 	this.pos = pos;
@@ -32,7 +32,7 @@ boid.prototype.draw = function(ctx){
 };
 
 boid.prototype.tick = function(boids){
-	var locals = this.findLocals(boids);
+	var locals = this.findLocalBoids(boids);
 	if (locals.length > 0) {
 		var avgPos = locals.averagePosition();
 		this.align(locals);
@@ -42,16 +42,22 @@ boid.prototype.tick = function(boids){
 	this.move()
 }
 
-boid.prototype.findLocals = function(boids){
-	var pos = this.pos, x = this.pos.x, y = this.pos.y, id = this.id;
-	var radius = this.locals.radius, angle = this.locals.angle;
-	return boids.arr.filter(function(boid){
-		var angTo = pos.angleTo(boid.pos);
-		return x && y && boid.pos.x && boid.pos.y 
-		&& Math.sqrt(Math.pow(x - boid.pos.x, 2) + Math.pow(y - boid.pos.y, 2)) < radius
-		&& (angTo < angle && - angle < angTo)
-		&& id != boid.id;
+Array.prototype.findLocals = function(boid){
+	return this.filter(function(obj){
+		var angTo = boid.pos.angleTo(obj.pos);
+		return boid.pos.x && boid.pos.y && obj.pos.x && obj.pos.y 
+		&& Math.sqrt(Math.pow(boid.pos.x - obj.pos.x, 2) + Math.pow(boid.pos.y - obj.pos.y, 2)) < boid.locals.radius
+		&& (angTo < boid.locals.angle && - boid.locals.angle < angTo)
+		&& boid.id != obj.id;
 	})
+}
+
+boid.prototype.findLocalBoids = function(boids){
+	return boids.arr.findLocals(this);
+}
+
+boid.prototype.findLocalObjects = function(objs){
+	return objs.arr.findLocals(this);
 }
 
 Array.prototype.averageHeading = function() {
