@@ -71,8 +71,11 @@ boid.prototype.draw = function(){
 
 boid.prototype.tick = function(boids){
 	var locals = this.findLocals(boids);
-	this.averageHeading(locals);
-	this.steerTowards(locals);
+	if (locals.length > 0) {
+		var avgPos = locals.averagePosition();
+		this.averageHeading(locals);
+		this.steerTowards(avgPos);
+	}
 	this.moveForward()
 }
 
@@ -114,11 +117,8 @@ Array.prototype.averagePosition = function() {
 }
 
 var steerTowardsStrength = 0.1;
-boid.prototype.steerTowards = function(locals){
-	if (locals.length > 0) {
-		var avgPos = locals.averagePosition();
-		this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
-	}
+boid.prototype.steerTowards = function(avgPos){
+	this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
 }
 
 var speed = 1;
