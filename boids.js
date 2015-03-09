@@ -26,9 +26,9 @@ boids.prototype.draw = function(ctx){
 	});
 }
 
-boids.prototype.tick = function(){
+boids.prototype.tick = function(objs){
 	for (var i = 0; i < this.arr.length; i++) {
-		this.arr[i].tick(this);
+		this.arr[i].tick(this,objs);
 	};
 }
 

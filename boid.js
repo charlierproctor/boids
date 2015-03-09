@@ -31,14 +31,16 @@ boid.prototype.draw = function(ctx){
 	ctx.stroke();
 };
 
-boid.prototype.tick = function(boids){
-	var locals = this.findLocalBoids(boids);
-	if (locals.length > 0) {
-		var avgPos = locals.averagePosition();
-		this.align(locals);
+boid.prototype.tick = function(boids,objs){
+	var localBoids = this.findLocalBoids(boids);
+	if (localBoids.length > 0) {
+		var avgPos = localBoids.averagePosition();
+		this.align(localBoids);
 		this.cohere(avgPos);
 		this.separate(avgPos);
 	}
+	this.navigateObjects(this.findLocalObjects(objs));
+
 	this.move()
 }
 
@@ -86,6 +88,17 @@ boid.prototype.cohere = function(avgPos){
 boid.prototype.separate = function(avgPos){
 	var angle = this.separationStrength * rangify(this.pos.angleTo(avgPos) + Math.PI - this.heading);
 	this.heading = rangify(this.heading + angle);
+}
+
+boid.prototype.navigateObjects = function(localObjects){
+	for (var i = 0; i < localObjects.length; i++) {
+		var obj = localObjects[i];
+		var angle = Math.abs(obj.strength) * rangify(this.pos.angleTo(obj.pos) - this.heading);
+		if (obj.strength < 0) {
+			angle = rangify(angle + Math.PI);
+		}
+		this.heading = rangify(this.heading + angle);
+	}
 }
 
 boid.prototype.move = function(){

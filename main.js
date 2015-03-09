@@ -31,7 +31,7 @@ window.onload = function(){
 }
 
 function tick(){
-	theBoids.tick();
+	theBoids.tick(theObjects);
 }
 
 function draw(){
