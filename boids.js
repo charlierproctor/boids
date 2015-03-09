@@ -6,7 +6,7 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	theBoids = new boids(50);
+	theBoids = new boids(200);
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
 }
@@ -75,6 +75,7 @@ boid.prototype.tick = function(boids){
 		var avgPos = locals.averagePosition();
 		this.averageHeading(locals);
 		this.steerTowards(avgPos);
+		this.avoid(avgPos);
 	}
 	this.moveForward()
 }
@@ -97,7 +98,7 @@ Array.prototype.averageHeading = function() {
   	return this.sumOfHeadings() / (this.length || 1);
 }
 
-var avgHeadingStrength = 0.5;
+var avgHeadingStrength = 0.4;
 boid.prototype.averageHeading = function(locals){
 	if (locals.length > 0){
 		this.heading += (avgHeadingStrength * (locals.averageHeading() - this.heading));
@@ -116,12 +117,17 @@ Array.prototype.averagePosition = function() {
   	return new coords(sum.x / denom, sum.y / denom);
 }
 
-var steerTowardsStrength = 0.1;
+var steerTowardsStrength = 0.01;
 boid.prototype.steerTowards = function(avgPos){
 	this.heading += steerTowardsStrength * this.pos.angleTo(avgPos);
 }
+var avoidStrength = 0.008;
+boid.prototype.avoid = function(avgPos){
+	var oppositeDirection = Math.PI - this.pos.angleTo(avgPos);
+	this.heading += avoidStrength * oppositeDirection;
+}
 
-var speed = 1;
+var speed = 2;
 boid.prototype.moveForward = function(){
 	this.pos.x -= speed * Math.sin(this.heading);
 	this.pos.y += speed * Math.cos(this.heading);
