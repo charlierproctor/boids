@@ -106,7 +106,7 @@ boid.prototype.navigateObjects = function(localObjects){
 }
 
 boid.prototype.move = function(){
-	this.pos.x -= this.speed * Math.sin(this.heading);
+	this.pos.x += this.speed * Math.sin(this.heading);
 	this.pos.y += this.speed * Math.cos(this.heading);
 	this.pos.checkBounds()
 }

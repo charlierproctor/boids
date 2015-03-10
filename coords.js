@@ -9,10 +9,10 @@ coords.prototype.add = function(coords){
 	return this;
 }
 coords.prototype.rotate = function(radians){
-	var x = this.x * Math.cos(radians) - this.y * Math.sin(radians);
-	var y = this.x * Math.sin(radians) + this.y * Math.cos(radians);
+	var x = this.x * Math.cos(radians) + this.y * Math.sin(radians);
+	var y = this.x * Math.sin(radians) - this.y * Math.cos(radians);
 	this.x = x;
-	this.y = y;
+	this.y = -y;
 }
 coords.prototype.angleTo = function(coords){
 	var y = - (coords.y - this.y), x = coords.x - this.x;
