@@ -95,12 +95,12 @@ boid.prototype.navigateObjects = function(localObjects){
 		var obj = localObjects[i];
 		var angle
 		if (obj.strength < 0) {
-			angle = rangify(this.pos.angleTo(obj.pos) + Math.PI - this.heading);
+			angle = rangify(this.pos.angleTo(obj.pos) - this.heading);
 		} else {
 			angle = rangify(this.pos.angleTo(obj.pos) + Math.PI / 2 - this.heading);
 		}
 
-		angle *= Math.abs(obj.strength);
+		angle *= obj.strength;
 		this.heading = rangify(this.heading + angle);
 	}
 }
