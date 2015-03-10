@@ -7,7 +7,7 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	theBoids = new boids(canvas, 100, {
+	theBoids = new boids(canvas, 200, {
 		speed: 5,
 		alignmentStrength: 0.8,
 		cohesionStrength: 0.1,
@@ -17,15 +17,15 @@ window.onload = function(){
 			height: 20
 		},
 		locals: {
-			radius: 50,
+			radius: 100,
 			angle: 0.9 * Math.PI
 		}
 	});
-	theObjects = new objects(canvas, 10, {
+	theObjects = new objects(canvas, 20, {
 		shape: {
 			radius: 10
 		}, 
-		maxStrength: 0.1
+		maxStrength: 0.2
 	})
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
