@@ -5,6 +5,7 @@ function object(id,pos,opts){
 	this.pos = pos;
 	this.strength = opts.strength;
 	this.shape = opts.shape;
+	this.maxStrength = opts.maxStrength;
 }
 
 object.prototype.draw = function(ctx){
@@ -13,9 +14,9 @@ object.prototype.draw = function(ctx){
 	ctx.stroke();
 	var red = 255, green = 255;
 	if (this.strength < 0) {
-		green -= Math.abs(this.strength) * 255;
+		green -= Math.abs(this.strength / this.maxStrength) * 255;
 	} else {
-		red -= Math.abs(this.strength) * 255;
+		red -= Math.abs(this.strength / this.maxStrength) * 255;
 	}
 	ctx.fillStyle = "rgb(" + Math.round(red) + "," + Math.round(green) + ",0)";
 	ctx.fill();

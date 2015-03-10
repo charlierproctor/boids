@@ -9,7 +9,7 @@ function objects(canvas, num, opts){
 objects.prototype.createObjects = function(canvas,opts){
 	var id = 0;
 	for (var i = 0; i < this.num; i++) {
-		opts.strength = Math.random() * 2 - 1;
+		opts.strength = opts.maxStrength*(Math.random() * 2 - 1);
 		this.arr.push(new object(
 			id++,
 			new coords(

@@ -9,9 +9,9 @@ window.onload = function(){
 
 	theBoids = new boids(canvas, 100, {
 		speed: 5,
-		alignmentStrength: 0.4,
+		alignmentStrength: 0.8,
 		cohesionStrength: 0.1,
-		separationStrength: 0.05,
+		separationStrength: 0.3,
 		size: {
 			base: 10,
 			height: 20
@@ -21,10 +21,11 @@ window.onload = function(){
 			angle: 0.9 * Math.PI
 		}
 	});
-	theObjects = new objects(canvas, 20, {
+	theObjects = new objects(canvas, 10, {
 		shape: {
 			radius: 10
-		}
+		}, 
+		maxStrength: 0.1
 	})
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)
