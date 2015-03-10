@@ -21,8 +21,6 @@ object.prototype.draw = function(ctx){
 	ctx.fillStyle = "rgb(" + Math.round(red) + "," + Math.round(green) + ",0)";
 	ctx.fill();
 	ctx.stroke()
-	ctx.fillStyle = "black";
-
 };
 
 module.exports = object;
