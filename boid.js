@@ -81,7 +81,7 @@ Array.prototype.averagePosition = function() {
 }
 
 boid.prototype.cohere = function(avgPos){
-	var angle = this.cohesionStrength * rangify(this.pos.angleTo(avgPos) + Math.PI / 2 - this.heading);
+	var angle = this.cohesionStrength * rangify(this.pos.angleTo(avgPos) - this.heading);
 	this.heading = rangify(this.heading + angle);
 }
 
@@ -95,9 +95,9 @@ boid.prototype.navigateObjects = function(localObjects){
 		var obj = localObjects[i];
 		var angle
 		if (obj.strength < 0) {
-			angle = rangify(this.pos.angleTo(obj.pos) - this.heading);
+			angle = rangify(this.pos.angleTo(obj.pos)  - this.heading);
 		} else {
-			angle = rangify(this.pos.angleTo(obj.pos) + Math.PI / 2 - this.heading);
+			angle = rangify(this.pos.angleTo(obj.pos) - this.heading);
 		}
 
 		angle *= obj.strength;

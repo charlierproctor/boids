@@ -17,7 +17,7 @@ window.onload = function(){
 			height: 20
 		},
 		locals: {
-			radius: 100,
+			radius: 50,
 			angle: 0.9 * Math.PI
 		}
 	});
@@ -25,7 +25,7 @@ window.onload = function(){
 		shape: {
 			radius: 10
 		}, 
-		maxStrength: 0.2
+		maxStrength: 0.1
 	})
 	ctx = canvas.getContext('2d');
 	ticker(window, 60).on('tick', tick).on('draw', draw)

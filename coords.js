@@ -15,10 +15,10 @@ coords.prototype.rotate = function(radians){
 	this.y = -y;
 }
 coords.prototype.angleTo = function(coords){
-	var y = - (coords.y - this.y), x = coords.x - this.x;
+	var y = coords.y - this.y, x = coords.x - this.x;
 	var res = Math.atan(y / x);
-	if (x < 0) {
-		if (y > 0){
+	if (y < 0) {
+		if (x > 0){
 			res += Math.PI;
 		} else {
 			res -= Math.PI;
