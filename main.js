@@ -7,8 +7,8 @@ window.onload = function(){
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	theBoids = new boids(canvas, 200, {
-		speed: 5,
+	theBoids = new boids(canvas, 50, {
+		speed: 3,
 		alignmentStrength: 0.8,
 		cohesionStrength: 0.1,
 		separationStrength: 0.3,

@@ -23,12 +23,15 @@ boid.prototype.draw = function(ctx){
 		pts[i].add(this.pos);
 	};
 
+	ctx.strokeStyle = "white";
 	ctx.beginPath();
 	ctx.moveTo(pts[0].x,pts[0].y);
 	ctx.lineTo(pts[1].x,pts[1].y);
 	ctx.lineTo(pts[2].x,pts[2].y);
 	ctx.closePath();
 	ctx.stroke();
+	ctx.fillStyle = "white";
+	ctx.fill();
 };
 
 boid.prototype.tick = function(boids,objs){
